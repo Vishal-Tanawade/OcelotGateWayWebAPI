@@ -6,10 +6,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Ocelot.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Ocelot.Middleware;
 
 namespace CustomerCareServiceGatewayWebAPI
 {
@@ -31,10 +33,11 @@ namespace CustomerCareServiceGatewayWebAPI
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CustomerCareServiceGatewayWebAPI", Version = "v1" });
             });
+            services.AddOcelot(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public async void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -51,6 +54,7 @@ namespace CustomerCareServiceGatewayWebAPI
             {
                 endpoints.MapControllers();
             });
+            await app.UseOcelot();
         }
     }
 }
